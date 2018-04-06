@@ -1,0 +1,362 @@
+Student Name :Shivprasad Pareek
+Student ID :11601361	
+Email Address: shivprasadpareek37@gmail.com	
+GitHub Link:https://github.com/shivprasadpareek/Operatingg-system-project
+
+code:
+****************************************************************************************************************
+/*Ques. 3. Consider a scheduler which schedules the job by considering the arrival time of the processes where 
+arrival time if given as 0 is discarded or displayed as error. 
+The scheduler implements the shortest job first scheduling policy, but checks the queue of the processes after the every process 
+terminates and time taken for checking and arranging the process according to the shortest job is 2 time unit. 
+Compute the waiting time, turnaround time and average waiting time and turnaround time of the processes. 
+Also compute the total time taken by the processor to compute all the jobs. 
+The inputs for the number of requirements, arrival time and burst time should be provided by the user. 
+ */
+#include<stdio.h>
+#include<conio.h>
+int j,i,k,n,arv[10],burst[10],wait[10],tat[10];
+void waitingtime();
+void avgwait();
+void tatm();
+void avgtat();
+void tottime();
+void waitingtime()
+{
+	int temp=0;
+	printf("Waiting time of process p1 is:2");
+	for(i=1;i<n;i++)
+	{
+		
+		for(j=0;j<i;j++)
+		{
+			temp+=burst[j];
+			
+		}
+		temp+=arv[0];
+		printf("\nWaiting time of process p%d:%d",i+1,temp-arv[i]+2);
+		wait[i]=temp-arv[i]+2;
+		temp=0;
+		
+	}
+}
+void avgwait()
+{
+	int avg=0;
+	for(i=0;i<n;i++)
+	{
+		avg+=wait[i];
+	}
+	printf("\nAverage waiting time is:%d",avg/n);
+	
+}
+void tatm()
+{
+	for(i=0;i<n;i++)
+	{
+		printf("\nTurnAroundTime of the process p%d is:%d",i+1,wait[i]+burst[i]);
+		tat[i]=wait[i]+burst[i];
+	}
+	
+}
+void avgtat()
+{
+	int	avg=0;
+	for(i=0;i<n;i++)
+	{
+		avg+=tat[i];
+	}
+	printf("\nAverage TAT is:%d",avg/n);
+	
+}
+void tottime()
+{
+	int ttime=0,xtra;
+	for(i=0;i<n;i++)
+	{
+		ttime+=burst[i];	
+	}
+	xtra=2*(n-1);
+	ttime+=xtra;
+	printf("\nThe total time taken to process the given process's is:%d",ttime);
+	
+}
+ void main()
+ {
+ 	int k;
+ 	printf("\nEnter the number of requirements:\t");
+ 	scanf("%d",&n);
+ 	for(i=0;i<n;i++)
+ 	{
+ 		printf("Enter the arival time of process p%d: \t",i+1);
+		scanf("%d",&k);
+		if(k==0)
+		{
+		printf("zero not allowed\n");
+		printf("Re-enter the arrival time:\t");
+		scanf("%d",&arv[i]);
+		}
+		else
+			arv[i]=k;
+		printf("Enter the burst time of the proecss:\t");
+		scanf("%d",&burst[i]);
+		
+	}
+	int j,temp=0;
+	wait[0]=0;
+	for(i=0;i<n;i++)
+	{
+		for(j=i+1;j<n;j++)
+		{
+		
+		if(burst[i]>burst[j])
+		{
+			temp=arv[i];
+			arv[i]=arv[j];
+			arv[j]=temp;
+			
+			temp=burst[i];
+			burst[i]=burst[j];
+			burst[j]=temp;
+			
+		}
+		}
+	}
+	waitingtime();tatm();avgwait();avgtat();tottime();
+	
+	
+}	
+ 
+*******************************************************************************************************************
+/*Ques. 4.  Consider a scheduling approach which is non pre-emptive similar to shortest job next in nature. 
+The priority of each job is dependent on its estimated run time, and also the amount of time it has spent waiting. 
+Jobs gain higher priority the longer they wait, which prevents indefinite postponement. 
+The jobs that have spent a long time waiting compete against those estimated to have short run times. 
+The priority can be computed as : Priority = 1+ Waiting time / Estimated run time 
+Using the data given below compute the waiting time and turnaround time for each process and average waiting time and average turnaround time. 
+ 
+Process Arrival time Burst time 
+P1 0 20 P2 5 36 P3 13 19 P4 17 42 
+ */
+ #include<stdio.h>
+#include<conio.h>
+#include<stdbool.h>
+int j,i,k,n,arv[10],burst[10],wait[10],tat[10],prr[10];
+
+ void main()
+ {
+ 	int k;
+ 	printf("\nEnter the number of requirements:\t");
+ 	scanf("%d",&n);
+ 	for(i=0;i<n;i++)
+ 	{
+ 		printf("Enter the arival time of process p%d: \t",i+1);
+		scanf("%d",&k);
+		if(k==0)
+		{
+		printf("zero not allowed\n");
+		printf("Re-enter the arrival time:\t");
+		scanf("%d",&arv[i]);
+		}
+		else
+			arv[i]=k;
+		printf("Enter the burst time of the proecss:\t");
+		scanf("%d",&burst[i]);
+		
+	}
+	int j,temp=0;
+
+	//Priority = 1+ Waiting time / Estimated run time
+	for(i=0;i<n;i++)
+	{
+		bool x = false;
+		int k;
+		k=1+(wait[i]/burst[i]);
+		for(j=0;j<i;j++)
+		{
+			if(k==prr[j])
+			x = true;
+		}
+		if(x)
+		prr[i]=k+i;
+		else
+		prr[i]=k;
+	}
+	for(i=0;i<n;i++)
+	{
+		for(j=i+1;j<n;j++)
+		{
+		
+		if(prr[i]>prr[j])
+		{
+			temp=prr[i];
+			prr[i]=prr[j];
+			prr[j]=temp;
+			
+			temp=burst[i];
+			burst[i]=burst[j];
+			burst[j]=temp;
+			
+			temp=arv[i];
+			arv[i]=arv[j];
+			arv[j]=temp;
+			
+		}
+		}
+	}
+	for(i=0;i<n;i++)
+	{
+		printf("\npriority:%d",prr[i]);
+	}
+	tatm();waitingtime();avgwait();avgtat();
+}
+void waitingtime()
+{
+	int temp=0;
+	wait[0]=0;
+	printf("Waiting time of process p1 is:0");
+	for(i=1;i<n;i++)
+	{
+		
+		for(j=0;j<i;j++)
+		{
+			temp+=burst[j];
+			
+		}
+		temp+=arv[0];
+		printf("\nWaiting time of process p%d:%d",i+1,temp-arv[i]);
+		wait[i]=temp-arv[i];
+		temp=0;
+		
+	}
+}
+void avgwait()
+{
+	int avg=0;
+	for(i=0;i<n;i++)
+	{
+		avg+=wait[i];
+	}
+	printf("\nAverage waiting time is:%d",avg/n);
+	
+}
+void avgtat()
+{
+	int	avg=0;
+	for(i=0;i<n;i++)
+	{
+		avg+=tat[i];
+	}
+	printf("\nAverage TAT is:%d",avg/n);
+	
+}	
+void tatm()
+{
+	for(i=0;i<n;i++)
+	{
+		printf("\nTurnAroundTime of the process p%d is:%d",i+1,wait[i]+burst[i]);
+		tat[i]=wait[i]+burst[i];
+	}
+	
+}
+
+********************************************************************************************************
+ Consider a scheduler which schedules the job by considering the arrival time of the processes where arrival time if given as 0 is discarded or displayed as error. The scheduler implements the shortest job first scheduling policy, but checks the queue of the processes after the every process terminates and time taken for checking and arranging the process according to the shortest job is 2 time unit. Compute the waiting time, turnaround time and average waiting time and turnaround time of the processes. Also compute the total time taken by the processor to compute all the jobs. 
+Ans:
+The Approach used to solve this problem is Shortest Job First.
+In this approach the CPU is provided to the process that has the minimum burst time.
+In the given problem the user needs to provide the arrival time and the burst time of all the process,after entering the number of requirements i.e;the number of process's the user would be entering.
+As mentioned in the problem the CPU checks the queue after each process leaves the CPU andthe time taken by the CPU to do so is 2 secs,therefore,2*(n-1)secs is the extra time that CPU takes to solve the problem.
+The waiting  time of each process is the difference of its arrival time and the sum of all the previous arrived process's burst time and the arrival time of the first process.
+The turn around time is the total time that the process spends i.e;
+	TAT  = Waiting time+Burst time.
+The average TAT is calculated using the tat.
+The Total time taken by the CPU to process theprocess's is the sum of the burst times of all the process's and the extra time taken to check the queue after evry process leaves the CPU.
+
+ Consider a scheduling approach which is non pre-emptive similar to shortest job next in nature. The priority of each job is dependent on its estimated run time, and also the amount of time it has spent waiting. Jobs gain higher priority the longer they wait, which prevents indefinite postponement. The jobs that have spent a long time waiting compete against those estimated to have short run times. The priority can be computed as : Priority = 1+ Waiting time / Estimated run time 
+Ans:
+The approach followed to solve the above problem is Shortest job first with priority implementation.
+the priority of the process's is calculated by a special formulae.
+		Priority = 1+ Waiting time / Estimated run time.
+The process's are then processed by the processer on the basis of the priority.
+The priority of the process increses as its waiting time increases.
+So,the problem of starvation is solved and this process of increasing the priorities of the process's is known aas aging.
+
+
+The Algorithm used for the first problem is Shortest job first.
+The Algorithm used for the second problem is shortest job first with the blend of priority scheduling.
+
+**********************************************************************************************************************************************************
+The complexity of the first implemented algorithm is :O(n^2)
+
+The complexity of the secondly implemented Algoritm is 0(n^2).
+
+Here in both the cases the n is number of processes that are to be processed.
+
+**********************************************************************************************************************************************************
+In the First problem the constraint given was that the arrial time of a process cant be 0:
+	
+for(i=0;i<n;i++)
+ 	{
+ 		printf("Enter the arival time of process p%d: \t",i+1);
+		scanf("%d",&k);
+		if(k==0)
+		{
+		printf("zero not allowed\n");
+		printf("Re-enter the arrival time:\t");
+		scanf("%d",&arv[i]);
+		}
+		else
+			arv[i]=k;
+		printf("Enter the burst time of the proecss:\t");
+		scanf("%d",&burst[i]);
+	}
+
+The abovecode snippet ensures that the arrival  timee of a process is not zero.
+
+
+
+In the second problem themain constraint to sort the given process's was of priority the solution for that is provided by the below code:
+for(i=0;i<n;i++)
+	{
+		bool x = false;
+		int k;
+		k=1+(wait[i]/burst[i]);
+		for(j=0;j<i;j++)
+		{
+			if(k==prr[j])
+			x = true;
+		}
+		if(x)
+		prr[i]=k+i;
+		else
+		prr[i]=k;
+	}
+
+Here,the boolean variable is used so that no to processes can have the same priority.
+
+***************************************************************************************************************************
+
+
+ 
+No,other algorith was used inthe first solution.
+In the second solution their is a blend of priority schedduling with Shortest job first.
+
+****************************************************************************************************************************
+For the first code:
+
+The maximum number of process's is:10.
+The Arrival time cant be zero.
+The Arrival time should be provided in the Acsending order for the better results.
+
+
+In the second code:
+The maximum number of process's is:10.
+The priorities are calculated on the basis of burst time and waiting time so we should make sure that no process has burst time as 0.
+
+********************************************************************************************************************************
+
+
+
+
+
